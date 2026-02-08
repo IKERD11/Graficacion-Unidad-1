@@ -1,0 +1,102 @@
+-> EXPLICACIÓN DEL CÓDIGO PARA CREAR UN POLÍGONO EN BLENDER CON PYTHON
+
+-> Importación de librerías
+
+import bpy
+Importa la API de Blender para crear objetos, mallas y manipular la escena.
+
+import math
+Importa funciones matemáticas como seno, coseno y el número pi.
+
+-> Definición de la función
+
+def crear_poligono_2d(nombre, lados, radio):
+Define una función que crea un polígono 2D.
+
+-> Parámetros:
+
+nombre: nombre del objeto en Blender
+
+lados: número de lados del polígono
+
+radio: tamaño del polígono (distancia del centro a los vértices)
+
+-> Crear la malla y el objeto
+
+malla = bpy.data.meshes.new(nombre)
+Crea una nueva malla vacía.
+
+objeto = bpy.data.objects.new(nombre, malla)
+Crea un objeto en Blender usando esa malla.
+
+-> Vincular el objeto a la escena
+
+bpy.context.collection.objects.link(objeto)
+Agrega el objeto a la colección activa para que sea visible en la escena.
+
+-> Crear listas para datos geométricos
+
+vertices = []
+Lista donde se guardarán las coordenadas de los vértices.
+
+aristas = []
+Lista donde se guardarán las conexiones entre vértices (líneas).
+
+-> Calcular los vértices del polígono
+
+for i in range(lados):
+
+-> Bucle que se repite tantas veces como lados tenga el polígono.
+
+angulo = 2 * math.pi * i / lados
+
+-> Divide el círculo completo (360° o 2π radianes) entre el número de lados para obtener el ángulo de cada vértice.
+
+x = radio * math.cos(angulo)
+
+-> Calcula la coordenada X del vértice usando coseno.
+
+y = radio * math.sin(angulo)
+
+-> Calcula la coordenada Y del vértice usando seno.
+
+vertices.append((x, y, 0))
+
+-> Guarda el vértice en la lista.
+El valor Z es 0 porque el polígono es 2D (plano XY).
+
+-> Crear las aristas (conexiones)
+
+for i in range(lados):
+
+-> Bucle para conectar los vértices entre sí.
+
+aristas.append((i, (i + 1) % lados))
+
+-> Conecta cada vértice con el siguiente.
+El operador % lados hace que el último vértice se conecte con el primero, cerrando el polígono.
+
+-> Cargar los datos en la malla
+
+malla.from_pydata(vertices, aristas, [])
+
+-> Carga los vértices y aristas en la malla.
+La lista vacía indica que no se crean caras (solo líneas).
+
+malla.update()
+
+-> Actualiza la malla para que Blender muestre los cambios.
+
+Limpiar la escena
+
+bpy.ops.object.select_all(action='SELECT')
+
+-> Selecciona todos los objetos de la escena.
+
+bpy.ops.object.delete()
+
+-> Elimina todos los objetos seleccionados.
+Llamar a la función
+
+crear_poligono_2d("Poligono2D", lados=6, radio=5)
+Crea un hexágono (6 lados) con radio 5 y lo llama “Poligono2D”.
